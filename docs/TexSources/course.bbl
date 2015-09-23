@@ -1,0 +1,67 @@
+\makeatletter\renewcommand{\@biblabel}[1]{#1.}\makeatother
+\ifx\undefined\BibPrefix\def\BibPrefix{}\else\fi
+\ifx\undefined\BibPostfix\def\BibPostfix{}\else\fi
+\ifx\undefined\BibEmph\def\BibEmph#1{#1}\else\fi
+\ifx\undefined\href\def\href#1#2{#2}\else\fi
+\ifx\undefined\url\def\url#1{\texttt{#1}}\else\fi
+\ifx\undefined\urlprefix\def\urlprefix{}\else\fi
+\ifx\undefined\BibUrl\def\BibUrl#1{\urlprefix\url{#1}}\else\fi
+\ifx\undefined\BibUrlDate\long\def\BibUrlDate#1{({%
+\cyr\cyrd\cyra\cyrt\cyra\ %
+\cyro\cyrb\cyrr\cyra\cyrshch\cyre\cyrn\cyri\cyrya}: #1)}\else\fi
+\ifx\undefined\BibAnnote\long\def\BibAnnote#1{#1}\else\fi
+\begin{thebibliography}{\BibPrefix1\BibPostfix}
+\def\selectlanguageifdefined#1{
+\expandafter\ifx\csname date#1\endcsname\relax
+\else\language\csname l@#1\endcsname\fi}
+
+\bibitem[\BibPrefix1\BibPostfix]{sea}
+\selectlanguageifdefined{english}
+\BibUrl{http://zavie.free.fr/opengl/water.tar.gz}.
+
+\bibitem[\BibPrefix2\BibPostfix]{patterns}
+\selectlanguageifdefined{russian}
+\BibEmph{Гамма~Э., Хелм~Р., Джонсон~Р.,
+  Влиссидес~Д.} Приемы
+  объектно-ориентированного
+  программирования.
+\newblock Санкт-Петербург:Питер, 2010.
+\newblock {\cyr\CYRS.}~366.
+
+\bibitem[\BibPrefix3\BibPostfix]{pavlovskaya}
+\selectlanguageifdefined{english}
+\BibEmph{Павловская~Т.~А., Щупак~Ю.~А.} C++
+  объектно-ориентированное
+  программирование. Практикум.
+\newblock Питер, 2004.
+
+\bibitem[\BibPrefix4\BibPostfix]{backprop}
+\selectlanguageifdefined{english}
+\BibEmph{Coetzee~D.}
+\newblock \BibUrl{http://moonflare.com/code/nnetwork.php}.
+
+\bibitem[\BibPrefix5\BibPostfix]{maks}
+\selectlanguageifdefined{russian}
+\BibEmph{Шлее~М.} Профессиональное
+  программирование на C++. Qt 4.5.
+\newblock Санкт-Петербург: БХВ-Петербург, 2010.
+\newblock {\cyr\CYRS.}~884.
+
+\bibitem[\BibPrefix6\BibPostfix]{zemskov}
+\selectlanguageifdefined{russian}
+\BibEmph{Земсков~Ю.~В.} Qt 4 на примерах.
+\newblock Санкт-Петербург: БХВ-Петербург, 2008.
+
+\bibitem[\BibPrefix7\BibPostfix]{Callan}
+\selectlanguageifdefined{english}
+\BibEmph{Callan~R.} The essence of neural networks.
+\newblock USA, New-York: Prentice Hall, 1997.
+\newblock P.~189.
+
+\bibitem[\BibPrefix8\BibPostfix]{Haykin}
+\selectlanguageifdefined{russian}
+\BibEmph{Хайкин~С.} Нейронные сети. Полный курс.
+\newblock Москва: Вильямс, 2008.
+\newblock {\cyr\CYRS.}~1103.
+
+\end{thebibliography}
