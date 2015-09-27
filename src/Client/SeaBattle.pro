@@ -4,12 +4,15 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QMAKE_CXXFLAGS += -fpermissive
+QT       += core gui network widgets multimedia
 QT += opengl
 
 TARGET = SeaBattle
 TEMPLATE = app
 
+
+LIBS += -lGLU32 -lopengl32 -ljpeg-9
 
 SOURCES += main.cpp\
         seabattle.cpp \
@@ -57,4 +60,4 @@ FORMS    += seabattle.ui \
 RESOURCES += \
     resources.qrc
 
-LIBS += -ljpeg
+#LIBS += -ljpeg

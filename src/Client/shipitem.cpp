@@ -7,8 +7,9 @@
 #include <stdio.h>
 
 ShipItem::ShipItem(QGraphicsScene *scene, int level, Ship & ship) :
-    QGraphicsItem(0,scene), m_ship(ship)
+    QGraphicsItem(NULL), m_ship(ship)
 {
+    scene->addItem(this);
     width = scene->width();
     height = scene->height();
 
