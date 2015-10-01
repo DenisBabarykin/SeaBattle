@@ -23,7 +23,10 @@ moc_*.cpp
 qrc_*.cpp
 ui_*.h
 Makefile*
-*-build-*
+*build*
+*.debug
+*.release
+
 
 # QtCreator
 
@@ -32,3 +35,6 @@ Makefile*
 #QtCtreator Qml
 *.qmlproject.user
 *.qmlproject.user.*
+
+#Customs
+SeaBattle.exe

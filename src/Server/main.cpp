@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <map>
 #include <iostream>
-
+//#define WIN32
 #ifndef WIN32
 
 //заголовки для Windows
@@ -28,7 +28,16 @@
 #include <errno.h>
 #include <string.h>
 #include <string>
+/*
+#include <pthread_compat.h>
+#include <pthread_signal.h>
+#include <pthread_time.h>
+#include <pthread_unistd.h>
+*/
 #include <pthread.h>
+
+typedef unsigned int my_uint32_t;
+#define uint32_t my_uint32_t
 
 uint32_t game_port = 12501;  //порт, на котором запускать сервер
 const size_t NS = 1024; //максимальное количество байтов в сообщении
@@ -129,13 +138,13 @@ void analyze(char *mes, int size, int client)
     }
     else if(!strcmp(cmd, "LIST"))
     {
-	size_t mlen = 0;
-	string users = "LIST\n";
-	for ( it=clients.begin() ; it != clients.end(); it++ )
-	    if((*it).first != client)
-            users += (*it).second + "\n"; 
-	        
-	writeToClient(client, users.c_str(), users.size());        
+    size_t mlen = 0;
+    string users = "LIST\n";
+    for ( it=clients.begin() ; it != clients.end(); it++ )
+        if((*it).first != client)
+            users += (*it).second + "\n";
+
+    writeToClient(client, users.c_str(), users.size());
     }
     else if(!strcmp(cmd, "SEND"))
     {
@@ -153,7 +162,7 @@ void analyze(char *mes, int size, int client)
                 ok = true;
             }
         }
-	if(!ok)
+    if(!ok)
         {
             const char * out = "Пользователь не подключен к серверу.";
             writeToClient(client, out, strlen(out));
@@ -173,13 +182,13 @@ void analyze(char *mes, int size, int client)
             if((*it).second == n)
             {
                 p++;
-		string st  = string(cmd) + " " + clients[client];
+        string st  = string(cmd) + " " + clients[client];
                 writeToClient((*it).first, st.c_str(), st.size());
                 ic = (*it).first;
                 ok = true;
             }
         }
-	if(!ok) 
+    if(!ok)
         {
             const char * out = "Пользователь не подключен к серверу.";
             writeToClient(client, out, strlen(out));
@@ -317,9 +326,9 @@ int main (int , char ** )
       game_port = t_port;
     else
       printf("Illegal port. Started on 12501.\n");
-     
+
     //game_port = atoi(argv[1]);
-    
+
 
 #ifdef WIN32
     WSADATA wsadata;
@@ -361,7 +370,7 @@ int main (int , char ** )
             pthread_attr_t attr;
             pthread_attr_init(&attr);
             pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-	  
+
             pthread_mutex_lock( &mutex );
             pthread_create(&thread, &attr, Child, &client);
             pthread_mutex_unlock( &mutex );

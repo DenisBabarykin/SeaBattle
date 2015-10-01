@@ -1,4 +1,4 @@
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <QTextCodec>
 
 #include "seabattle.h"
@@ -13,7 +13,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("Sea Battle Game");
 
 
-    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+//    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 
     SeaBattle w;
     w.show();

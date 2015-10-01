@@ -17,7 +17,7 @@ Solver::Solver()
 
     //QMessageBox::warning(0, "gg", path);
 
-    stream.open(path.toAscii(), std::ifstream::binary);
+    stream.open(path.toLatin1(), std::ifstream::binary);
 
     if(stream.is_open())
     {
