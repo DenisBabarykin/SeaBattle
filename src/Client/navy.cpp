@@ -55,7 +55,7 @@ Navy::~Navy()
 
 enum Navy::lState Navy::getState(int x, int y) const
 {
-    if(x < 0 || y >= 10) return Navy::ERROR;
+    if(x < 0 || y >= 10) return Navy::S_ERROR;
     return field[x][y];
 }
 
@@ -200,15 +200,15 @@ bool Navy::locateShip(int x0, int y0, int level, bool vert)
             field[x][y] = SHIP;
             ship.addCell(x,y);
 
-            setState(x-1, y, NEAR);
-            setState(x+1, y, NEAR);
+            setState(x-1, y, Navy::S_NEAR);
+            setState(x+1, y, Navy::S_NEAR);
         }
-        setState(x0-1, y0-1, NEAR);
-        setState(  x0, y0-1, NEAR);
-        setState(x0+1, y0-1, NEAR);
-        setState(x-1, y, NEAR);
-        setState(  x, y, NEAR);
-        setState(x+1, y, NEAR);
+        setState(x0-1, y0-1, Navy::S_NEAR);
+        setState(  x0, y0-1, Navy::S_NEAR);
+        setState(x0+1, y0-1, Navy::S_NEAR);
+        setState(x-1, y, Navy::S_NEAR);
+        setState(  x, y, Navy::S_NEAR);
+        setState(x+1, y, Navy::S_NEAR);
 
     }
     else
@@ -219,15 +219,15 @@ bool Navy::locateShip(int x0, int y0, int level, bool vert)
             field[x][y0] = SHIP;
             ship.addCell(x,y0);
 
-            setState(x, y0-1, NEAR);
-            setState(x, y0+1, NEAR);
+            setState(x, y0-1, Navy::S_NEAR);
+            setState(x, y0+1, Navy::S_NEAR);
         }
-        setState(x0-1, y0-1, NEAR);
-        setState(x0-1,   y0, NEAR);
-        setState(x0-1, y0+1, NEAR);
-        setState(x, y0-1, NEAR);
-        setState(x,   y0, NEAR);
-        setState(x, y0+1, NEAR);
+        setState(x0-1, y0-1, Navy::S_NEAR);
+        setState(x0-1,   y0, Navy::S_NEAR);
+        setState(x0-1, y0+1, Navy::S_NEAR);
+        setState(x, y0-1, Navy::S_NEAR);
+        setState(x,   y0, Navy::S_NEAR);
+        setState(x, y0+1, Navy::S_NEAR);
     }
 
     ships.push_back(ship);
@@ -243,8 +243,8 @@ void Navy::clean()
 {
     for(int i = 0; i <N; ++i)
     for(int j = 0; j< N; ++j)
-        if(field[i][j] == NEAR)
-            field[i][j] = FREE;
+        if(field[i][j] == Navy::S_NEAR)
+            field[i][j] = Navy::FREE;
 }
 
 void Navy::locate()
@@ -255,6 +255,6 @@ void Navy::locate()
 
     for(int i = 0; i <N; ++i)
     for(int j = 0; j< N; ++j)
-        if(field[i][j] == NEAR)
-            field[i][j] = FREE;
+        if(field[i][j] == Navy::S_NEAR)
+            field[i][j] = Navy::FREE;
 }

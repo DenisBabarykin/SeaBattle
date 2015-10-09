@@ -83,7 +83,7 @@ void Solver::fire(int &x, int &y)
                 for(int k = i-1; k>= 0; k--)
                 {
                     lState s = getState(k, j);
-                    if(s == Navy::ERROR || s == Navy::EMPTY)
+                    if(s == Navy::S_ERROR || s == Navy::EMPTY)
                         break;
                     if(s == Navy::FREE)
                     {
@@ -97,7 +97,7 @@ void Solver::fire(int &x, int &y)
                 for(int k = i+ 1; k < 10; k++)
                 {
                     lState s = getState(k, j);
-                    if(s == Navy::ERROR || s == Navy::EMPTY)
+                    if(s == Navy::S_ERROR || s == Navy::EMPTY)
                         break;
                     if(s == Navy::FREE)
                     {
@@ -111,7 +111,7 @@ void Solver::fire(int &x, int &y)
                 for(int k = j + 1; k < 10; k++)
                 {
                     lState s = getState(i, k);
-                    if(s == Navy::ERROR || s == Navy::EMPTY)
+                    if(s == Navy::S_ERROR || s == Navy::EMPTY)
                         break;
                     if(s == Navy::FREE)
                     {
@@ -125,7 +125,7 @@ void Solver::fire(int &x, int &y)
                 for(int k = j - 1; k >=0 ; k--)
                 {
                     lState s = getState(i, k);
-                    if(s == Navy::ERROR || s == Navy::EMPTY)
+                    if(s == Navy::S_ERROR || s == Navy::EMPTY)
                         break;
                     if(s == Navy::FREE)
                     {
@@ -169,7 +169,7 @@ void Solver::fire(int &x, int &y)
 
     }
 
-    if(ns == FREE)
+    if(ns == Navy::FREE)
     {
         x = n_x;
         y = n_y;
@@ -181,7 +181,7 @@ void Solver::fire(int &x, int &y)
         x0 = qrand() % 10;
         y0 = qrand() % 10;
         lState w = getState(x0, y0);
-        if(w == FREE)
+        if(w == Navy::FREE)
         {
             x = x0+1;
             y = y0+1;

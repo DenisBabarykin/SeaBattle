@@ -323,7 +323,10 @@ int main (int , char ** )
     scanf("%d", &t_port);
 
     if(t_port > 0 && t_port < 65536)
+    {
       game_port = t_port;
+      printf("Started server on port with number %d.", game_port);
+    }
     else
       printf("Illegal port. Started on 12501.\n");
 
