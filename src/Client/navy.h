@@ -16,9 +16,9 @@ public:
     Navy(AutoLocation * location = 0, bool enemy = false);
     virtual ~Navy();
 
-    enum lState {FREE, SHOT, KILLED, S_NEAR, SHIP, EMPTY, S_ERROR};
+    enum lState {FREE, SHOT, KILLED, S_NEAR, SHIP, EMPTY, S_ERROR}; //состояние палубы корабля
 
-    static const int N = 10;
+    static const int N = 10; //размер поля.
 
     enum lState getState(int x, int y) const;
     void setState(int x, int y, enum lState);

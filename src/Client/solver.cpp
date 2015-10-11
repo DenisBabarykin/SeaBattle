@@ -9,8 +9,14 @@
 
 #include "Net.h"
 
-Solver::Solver()
+Solver::Solver(int width, int height)
 {
+    this->width = width;
+    this->height = height;
+
+    input = QVector<NeuralNetwork::real>(width * height);
+    output = QVector<NeuralNetwork::real>(width * height);
+
     std::ifstream stream;
 
     QString path = QCoreApplication::applicationDirPath() + "/solver.nnw";
@@ -24,12 +30,22 @@ Solver::Solver()
         net = new NeuralNetwork::Net(stream);
 //        input = (double *) calloc(100, sizeof(double));
 //        output = (double *) calloc(30, sizeof(double));
-        output = NULL;
+//        output = (NeuralNetwork::real *)malloc(width * height);
     }
     else
     {
         net = NULL;
     }
+}
+
+int Solver::getWidth()
+{
+    return width;
+}
+
+int Solver::getHeight()
+{
+    return height;
 }
 
 Solver::~Solver()
@@ -38,23 +54,23 @@ Solver::~Solver()
     {
 //        delete input;
 //        delete output;
-        free(output);
+//        free(output);
         delete net;
     }
 }
 
 void Solver::fire(int &x, int &y)
 {
+    printf("fire");
     int x0, y0;
     int k = 0;
 
-    for(int i =0; i <10; ++i)
+    for(int i =0; i <width; ++i)
     {
-        for(int j =0; j< 10; ++j)
+        for(int j =0; j< height; ++j)
         {
             printf("%d ", field[j][i]);
-            input.append(field[i][j]);
-//            input[k++] = field[i][j];
+            input[k++] = field[i][j];
         }
         printf("\n");
     }
@@ -64,10 +80,7 @@ void Solver::fire(int &x, int &y)
     if(net != NULL)
     {
     //Что скажеть нейросеть?
-        if (output != NULL)
-            free(output);
-        output= (NeuralNetwork::real *)malloc(sizeof(NeuralNetwork::real) * input.length());
-        net->run(input.data(), output);
+        net->run(input.data(), output.data());
 
     int n_x = output[0] * 10 + 1;
     int n_y = output[1] * 10 + 1;
