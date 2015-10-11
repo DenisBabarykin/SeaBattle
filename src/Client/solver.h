@@ -3,6 +3,7 @@
 
 #include "navy.h"
 #include "Net.h"
+#include <QVector>
 
 class Solver : public Navy
 {
@@ -15,7 +16,8 @@ private:
     struct shot{int x; int y;};
     NeuralNetwork::Net * net;
 
-    NeuralNetwork::real *input;
+    QVector<NeuralNetwork::real> input;
+//    QVector<NeuralNetwork::real> output;
     NeuralNetwork::real *output;
 
 };

@@ -22,8 +22,9 @@ Solver::Solver()
     if(stream.is_open())
     {
         net = new NeuralNetwork::Net(stream);
-        input = (double *) calloc(100, sizeof(double));
-        output = (double *) calloc(30, sizeof(double));
+//        input = (double *) calloc(100, sizeof(double));
+//        output = (double *) calloc(30, sizeof(double));
+        output = NULL;
     }
     else
     {
@@ -35,8 +36,9 @@ Solver::~Solver()
 {
     if(net)
     {
-        delete input;
-        delete output;
+//        delete input;
+//        delete output;
+        free(output);
         delete net;
     }
 }
@@ -51,7 +53,8 @@ void Solver::fire(int &x, int &y)
         for(int j =0; j< 10; ++j)
         {
             printf("%d ", field[j][i]);
-            input[k++] = field[i][j];
+            input.append(field[i][j]);
+//            input[k++] = field[i][j];
         }
         printf("\n");
     }
@@ -61,7 +64,10 @@ void Solver::fire(int &x, int &y)
     if(net != NULL)
     {
     //Что скажеть нейросеть?
-    net->run(input, output);
+        if (output != NULL)
+            free(output);
+        output= (NeuralNetwork::real *)malloc(sizeof(NeuralNetwork::real) * input.length());
+        net->run(input.data(), output);
 
     int n_x = output[0] * 10 + 1;
     int n_y = output[1] * 10 + 1;
