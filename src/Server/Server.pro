@@ -7,7 +7,14 @@
 QT       += core
 
 QT       -= gui
-LIBS += -lpthreadGC2 -lws2_32
+
+win32 {
+    LIBS += -lpthreadGC2 -lws2_32
+}
+
+unix {
+    LIBS += -lpthread
+}
 
 TARGET = SeaBattleServer
 CONFIG   += console
@@ -18,3 +25,6 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp
+
+HEADERS += \
+    logger.h

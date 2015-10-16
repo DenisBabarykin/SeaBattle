@@ -1,3 +1,4 @@
+
 /* Sea Server */
 
 #include <stdio.h>
@@ -36,6 +37,8 @@
 */
 #include <pthread.h>
 
+#include <logger.h>
+
 typedef unsigned int my_uint32_t;
 #define uint32_t my_uint32_t
 
@@ -69,7 +72,7 @@ long int getNext()
 void PANIC (const char *msg)
 {
     perror(msg);
-    exit(-1);
+//    exit(-1);
 }
 
 bool writeToClient(int client, const char * mes, const int mc)
@@ -93,7 +96,7 @@ bool writeToClient(int client, const char * mes, const int mc)
     free(message);
 
     printf(" LEN %d\n", len);
-
+    qDebug(" LEN %d", len);
     return rcount == len;
 }
 
@@ -213,7 +216,7 @@ void analyze(char *mes, int size, int client)
 void * Child (void *arg)
 {
     int client = *(int *) arg;
-
+    qDebug("New client!");
     printf("New client!\n");
     map<int, string>::iterator it;
 
@@ -311,12 +314,13 @@ void * Child (void *arg)
         writeToClient((*it).first, st.c_str(), st.size());
 
     }
-
+    qCritical("Client died!");
     printf("Client died!\n");
 }
 
 int main (int , char ** )
 {
+    qInstallMessageHandler(logMessagesInFile);
 
     int t_port;
     printf("Input port number: ");
@@ -325,10 +329,14 @@ int main (int , char ** )
     if(t_port > 0 && t_port < 65536)
     {
       game_port = t_port;
+      qDebug("Started server on port with number %d", game_port);
       printf("Started server on port with number %d.", game_port);
     }
     else
-      printf("Illegal port. Started on 12501.\n");
+    {
+        qDebug("Illegal port. Started on 12501.");
+        printf("Illegal port. Started on 12501.\n");
+    }
 
     //game_port = atoi(argv[1]);
 
@@ -337,7 +345,7 @@ int main (int , char ** )
     WSADATA wsadata;
     if (WSAStartup(MAKEWORD(1,1), &wsadata) == SOCKET_ERROR) {
         printf("Error creating socket.");
-        return -1;
+        qFatal("Error creating socket");
     }
 
 #endif
@@ -346,16 +354,25 @@ int main (int , char ** )
     struct sockaddr_in addr;
 
     if ((sd = socket (AF_INET, SOCK_STREAM, 0)) < 0)
+    {
         PANIC ("Socket");
+        qFatal("Socket");
+    }
 
     addr.sin_family = AF_INET;
     addr.sin_port = htons (game_port);
     addr.sin_addr.s_addr = INADDR_ANY;
 
     if (bind (sd, (struct sockaddr *) &addr, sizeof (addr)) != 0)
+    {
         PANIC ("Bind");
+        qFatal("Bind");
+    }
     if (listen (sd, 20) != 0)
+    {
         PANIC ("Listen");
+        qFatal("Listen");
+    }
 
     while (1) //бесконечный цикл по обслуживанию клиентов, с появлением нового клиента
         //запускается новый поток
