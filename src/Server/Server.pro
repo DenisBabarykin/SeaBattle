@@ -18,7 +18,7 @@ unix {
 }
 
 TARGET = SeaBattleServer
-CONFIG   += console c++14
+CONFIG   += console c++11
 CONFIG   -= app_bundle
 
 TEMPLATE = app
