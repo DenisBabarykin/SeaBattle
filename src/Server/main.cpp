@@ -318,9 +318,10 @@ void * Child (void *arg)
     printf("Client died!\n");
 }
 
-int main (int , char ** )
+int main (int argc, char **argv)
 {
     qInstallMessageHandler(logMessagesInFile);
+    QCoreApplication app(argc, argv);
 
     int t_port;
     printf("Input port number: ");

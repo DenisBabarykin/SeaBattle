@@ -4,6 +4,7 @@
 #
 #-------------------------------------------------
 
+
 QT       += core
 
 QT       -= gui
@@ -17,7 +18,7 @@ unix {
 }
 
 TARGET = SeaBattleServer
-CONFIG   += console
+CONFIG   += console c++14
 CONFIG   -= app_bundle
 
 TEMPLATE = app
