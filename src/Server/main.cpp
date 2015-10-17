@@ -6,10 +6,10 @@
 #include <unistd.h>
 #include <map>
 #include <iostream>
-//#define WIN32
+//#define WIN32   // Раскомментировать при компиляции под Windows
 #ifndef WIN32
 
-//заголовки для Windows
+//заголовки для Unix
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -19,7 +19,7 @@
 #include <dlfcn.h>
 
 #else
-//заголовки для Linux
+//заголовки для Windows
 #define HAVE_STRUCT_TIMESPEC 1
 #include <winsock2.h>
 

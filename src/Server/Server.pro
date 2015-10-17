@@ -9,12 +9,10 @@ QT       += core
 
 QT       -= gui
 
-win32 {
-    LIBS += -lpthreadGC2 -lws2_32
-}
+LIBS += -lpthread
 
-unix {
-    LIBS += -lpthread
+win32 {
+    LIBS += -lws2_32
 }
 
 TARGET = SeaBattleServer
