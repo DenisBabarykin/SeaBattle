@@ -314,7 +314,7 @@ void SeaBattle::response(const QString & mes)
         Navy::lState s = my->getState(x,y);
         if(s == Navy::EMPTY || s == Navy::KILLED || s == Navy::SHOT)
         {
-            writeMessage(tr("SEND %1 resu %2\n").arg(curPlayer).arg(QString::number(Navy::ERROR)).toUtf8());
+            writeMessage(tr("SEND %1 resu %2\n").arg(curPlayer).arg(QString::number(Navy::S_ERROR)).toUtf8());
             return;
         }
 
@@ -352,7 +352,7 @@ void SeaBattle::response(const QString & mes)
         QStringList coords = mes.split(" ");
         Navy::lState s = (Navy::lState)coords[1].toInt();
 
-        if(s == Navy::ERROR)
+        if(s == Navy::S_ERROR)
         {
             QMessageBox::warning(this, tr("Ошибка"), tr("По этому полю вы уже стреляли."));
             my->switch_cursor(true);

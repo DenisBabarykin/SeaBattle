@@ -1,3 +1,4 @@
+
 /* Sea Server */
 
 #include <stdio.h>
@@ -5,10 +6,10 @@
 #include <unistd.h>
 #include <map>
 #include <iostream>
-
+//#define WIN32   // Раскомментировать при компиляции под Windows
 #ifndef WIN32
 
-//заголовки для Windows
+//заголовки для Unix
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -18,7 +19,7 @@
 #include <dlfcn.h>
 
 #else
-//заголовки для Linux
+//заголовки для Windows
 #define HAVE_STRUCT_TIMESPEC 1
 #include <winsock2.h>
 
@@ -28,7 +29,18 @@
 #include <errno.h>
 #include <string.h>
 #include <string>
+/*
+#include <pthread_compat.h>
+#include <pthread_signal.h>
+#include <pthread_time.h>
+#include <pthread_unistd.h>
+*/
 #include <pthread.h>
+
+#include <logger.h>
+
+typedef unsigned int my_uint32_t;
+#define uint32_t my_uint32_t
 
 uint32_t game_port = 12501;  //порт, на котором запускать сервер
 const size_t NS = 1024; //максимальное количество байтов в сообщении
@@ -60,7 +72,7 @@ long int getNext()
 void PANIC (const char *msg)
 {
     perror(msg);
-    exit(-1);
+//    exit(-1);
 }
 
 bool writeToClient(int client, const char * mes, const int mc)
@@ -84,7 +96,7 @@ bool writeToClient(int client, const char * mes, const int mc)
     free(message);
 
     printf(" LEN %d\n", len);
-
+    qDebug(" LEN %d", len);
     return rcount == len;
 }
 
@@ -129,13 +141,13 @@ void analyze(char *mes, int size, int client)
     }
     else if(!strcmp(cmd, "LIST"))
     {
-	size_t mlen = 0;
-	string users = "LIST\n";
-	for ( it=clients.begin() ; it != clients.end(); it++ )
-	    if((*it).first != client)
-            users += (*it).second + "\n"; 
-	        
-	writeToClient(client, users.c_str(), users.size());        
+    size_t mlen = 0;
+    string users = "LIST\n";
+    for ( it=clients.begin() ; it != clients.end(); it++ )
+        if((*it).first != client)
+            users += (*it).second + "\n";
+
+    writeToClient(client, users.c_str(), users.size());
     }
     else if(!strcmp(cmd, "SEND"))
     {
@@ -153,7 +165,7 @@ void analyze(char *mes, int size, int client)
                 ok = true;
             }
         }
-	if(!ok)
+    if(!ok)
         {
             const char * out = "Пользователь не подключен к серверу.";
             writeToClient(client, out, strlen(out));
@@ -173,13 +185,13 @@ void analyze(char *mes, int size, int client)
             if((*it).second == n)
             {
                 p++;
-		string st  = string(cmd) + " " + clients[client];
+        string st  = string(cmd) + " " + clients[client];
                 writeToClient((*it).first, st.c_str(), st.size());
                 ic = (*it).first;
                 ok = true;
             }
         }
-	if(!ok) 
+    if(!ok)
         {
             const char * out = "Пользователь не подключен к серверу.";
             writeToClient(client, out, strlen(out));
@@ -204,7 +216,7 @@ void analyze(char *mes, int size, int client)
 void * Child (void *arg)
 {
     int client = *(int *) arg;
-
+    qDebug("New client!");
     printf("New client!\n");
     map<int, string>::iterator it;
 
@@ -302,30 +314,39 @@ void * Child (void *arg)
         writeToClient((*it).first, st.c_str(), st.size());
 
     }
-
+    qCritical("Client died!");
     printf("Client died!\n");
 }
 
-int main (int , char ** )
+int main (int argc, char **argv)
 {
+    qInstallMessageHandler(logMessagesInFile);
+    QCoreApplication app(argc, argv);
 
     int t_port;
     printf("Input port number: ");
     scanf("%d", &t_port);
 
     if(t_port > 0 && t_port < 65536)
+    {
       game_port = t_port;
+      qDebug("Started server on port with number %d", game_port);
+      printf("Started server on port with number %d.", game_port);
+    }
     else
-      printf("Illegal port. Started on 12501.\n");
-     
+    {
+        qDebug("Illegal port. Started on 12501.");
+        printf("Illegal port. Started on 12501.\n");
+    }
+
     //game_port = atoi(argv[1]);
-    
+
 
 #ifdef WIN32
     WSADATA wsadata;
     if (WSAStartup(MAKEWORD(1,1), &wsadata) == SOCKET_ERROR) {
         printf("Error creating socket.");
-        return -1;
+        qFatal("Error creating socket");
     }
 
 #endif
@@ -334,16 +355,25 @@ int main (int , char ** )
     struct sockaddr_in addr;
 
     if ((sd = socket (AF_INET, SOCK_STREAM, 0)) < 0)
+    {
         PANIC ("Socket");
+        qFatal("Socket");
+    }
 
     addr.sin_family = AF_INET;
     addr.sin_port = htons (game_port);
     addr.sin_addr.s_addr = INADDR_ANY;
 
     if (bind (sd, (struct sockaddr *) &addr, sizeof (addr)) != 0)
+    {
         PANIC ("Bind");
+        qFatal("Bind");
+    }
     if (listen (sd, 20) != 0)
+    {
         PANIC ("Listen");
+        qFatal("Listen");
+    }
 
     while (1) //бесконечный цикл по обслуживанию клиентов, с появлением нового клиента
         //запускается новый поток
@@ -361,7 +391,7 @@ int main (int , char ** )
             pthread_attr_t attr;
             pthread_attr_init(&attr);
             pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-	  
+
             pthread_mutex_lock( &mutex );
             pthread_create(&thread, &attr, Child, &client);
             pthread_mutex_unlock( &mutex );

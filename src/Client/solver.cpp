@@ -9,21 +9,28 @@
 
 #include "Net.h"
 
-Solver::Solver()
+Solver::Solver(int width, int height)
 {
+    this->width = width;
+    this->height = height;
+
+    input = QVector<NeuralNetwork::real>(width * height);
+    output = QVector<NeuralNetwork::real>(width * height);
+
     std::ifstream stream;
 
     QString path = QCoreApplication::applicationDirPath() + "/solver.nnw";
 
     //QMessageBox::warning(0, "gg", path);
 
-    stream.open(path.toAscii(), std::ifstream::binary);
+    stream.open(path.toLatin1(), std::ifstream::binary);
 
     if(stream.is_open())
     {
         net = new NeuralNetwork::Net(stream);
-        input = (double *) calloc(100, sizeof(double));
-        output = (double *) calloc(30, sizeof(double));
+//        input = (double *) calloc(100, sizeof(double));
+//        output = (double *) calloc(30, sizeof(double));
+//        output = (NeuralNetwork::real *)malloc(width * height);
     }
     else
     {
@@ -31,24 +38,36 @@ Solver::Solver()
     }
 }
 
+int Solver::getWidth()
+{
+    return width;
+}
+
+int Solver::getHeight()
+{
+    return height;
+}
+
 Solver::~Solver()
 {
     if(net)
     {
-        delete input;
-        delete output;
+//        delete input;
+//        delete output;
+//        free(output);
         delete net;
     }
 }
 
 void Solver::fire(int &x, int &y)
 {
+    printf("fire");
     int x0, y0;
     int k = 0;
 
-    for(int i =0; i <10; ++i)
+    for(int i =0; i <width; ++i)
     {
-        for(int j =0; j< 10; ++j)
+        for(int j =0; j< height; ++j)
         {
             printf("%d ", field[j][i]);
             input[k++] = field[i][j];
@@ -61,7 +80,7 @@ void Solver::fire(int &x, int &y)
     if(net != NULL)
     {
     //Что скажеть нейросеть?
-    net->run(input, output);
+        net->run(input.data(), output.data());
 
     int n_x = output[0] * 10 + 1;
     int n_y = output[1] * 10 + 1;
@@ -83,7 +102,7 @@ void Solver::fire(int &x, int &y)
                 for(int k = i-1; k>= 0; k--)
                 {
                     lState s = getState(k, j);
-                    if(s == Navy::ERROR || s == Navy::EMPTY)
+                    if(s == Navy::S_ERROR || s == Navy::EMPTY)
                         break;
                     if(s == Navy::FREE)
                     {
@@ -97,7 +116,7 @@ void Solver::fire(int &x, int &y)
                 for(int k = i+ 1; k < 10; k++)
                 {
                     lState s = getState(k, j);
-                    if(s == Navy::ERROR || s == Navy::EMPTY)
+                    if(s == Navy::S_ERROR || s == Navy::EMPTY)
                         break;
                     if(s == Navy::FREE)
                     {
@@ -111,7 +130,7 @@ void Solver::fire(int &x, int &y)
                 for(int k = j + 1; k < 10; k++)
                 {
                     lState s = getState(i, k);
-                    if(s == Navy::ERROR || s == Navy::EMPTY)
+                    if(s == Navy::S_ERROR || s == Navy::EMPTY)
                         break;
                     if(s == Navy::FREE)
                     {
@@ -125,7 +144,7 @@ void Solver::fire(int &x, int &y)
                 for(int k = j - 1; k >=0 ; k--)
                 {
                     lState s = getState(i, k);
-                    if(s == Navy::ERROR || s == Navy::EMPTY)
+                    if(s == Navy::S_ERROR || s == Navy::EMPTY)
                         break;
                     if(s == Navy::FREE)
                     {
@@ -169,7 +188,7 @@ void Solver::fire(int &x, int &y)
 
     }
 
-    if(ns == FREE)
+    if(ns == Navy::FREE)
     {
         x = n_x;
         y = n_y;
@@ -181,7 +200,7 @@ void Solver::fire(int &x, int &y)
         x0 = qrand() % 10;
         y0 = qrand() % 10;
         lState w = getState(x0, y0);
-        if(w == FREE)
+        if(w == Navy::FREE)
         {
             x = x0+1;
             y = y0+1;
